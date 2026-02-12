@@ -1,21 +1,8 @@
 {
   "version": 2,
-  "framework": null,
-  "buildCommand": null,
-  "installCommand": "yarn install",
-  "builds": [
-    {
-      "src": "api/mcp.ts",
-      "use": "@vercel/node",
-      "config": {
-        "runtime": "nodejs24.x"
-      }
+  "functions": {
+    "api/mcp.ts": {
+      "runtime": "nodejs24.x"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/mcp/(.*)",
-      "dest": "/api/mcp.ts"
-    }
-  ]
+  }
 }
