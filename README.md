@@ -51,11 +51,11 @@ Deploy to Vercel to use with Claude.ai web application.
 
 In Vercel project settings, go to **Settings** → **Environment Variables** and add:
 
-1. **`CODA_API_TOKEN`**: Your Coda API key from https://coda.io/account
-2. **`MCP_AUTH_TOKEN`**: A secure random token (generate with: `openssl rand -hex 32`)
-   - **Important**: This protects your server from unauthorized access
-3. Select **Production** environment for both
-4. Save
+1. **`API_KEY`**: Your Coda API key from https://coda.io/account
+2. Select **Production** environment
+3. Save
+
+**Note**: The server runs in authless mode. Your Vercel URL acts as the security token - keep it private.
 
 #### 3. Deploy
 
@@ -63,16 +63,14 @@ Vercel will automatically deploy. Your deployment will be at: `https://your-proj
 
 #### 4. Configure Claude.ai
 
-1. Go to [Claude.ai](https://claude.ai)'s Organization Settings (you must be a team admin or owner)
-2. Navigate to **Capabilities**
-3. Add your MCP server URL with token:
+1. Go to [Claude.ai](https://claude.ai) Settings
+2. Navigate to **Connectors** (under Custom Connectors)
+3. Click **Add Connector**
+4. Enter your MCP server URL:
    ```
-   https://your-project.vercel.app/api/mcp?token=your_generated_token_here
+   https://your-project.vercel.app/api/mcp
    ```
-   (Replace `your_generated_token_here` with your actual `MCP_AUTH_TOKEN` value)
-4. Go to your user setitngs
-5. Navigate to **Connections**
-6. Find the Coda connection and click "enable"
+5. Click **Connect**
 
 #### Verify Deployment
 
@@ -142,26 +140,19 @@ All three share the same core logic in `src/server.ts`.
 
 ## Security
 
-**Important**: When deploying publicly, always set `MCP_AUTH_TOKEN` to protect your server from unauthorized access. Without it, anyone who knows your URL can access your Coda account.
+**Important**: This server runs in authless mode for simplicity. Your Vercel URL is effectively your access token - anyone with the URL can access your Coda account.
 
-Generate a secure token:
-```bash
-openssl rand -hex 32
-```
-
-Add it as an environment variable in Vercel, and include it in your URL as a query parameter:
-```
-https://your-project.vercel.app/api/mcp?token=your_token_here
-```
-
-**Note**: Query parameter auth is simple but the token appears in URLs. For production use, consider implementing OAuth.
+**Security recommendations**:
+- Keep your Vercel URL private
+- Use Vercel's domain obfuscation features
+- For production, implement OAuth following the [MCP auth spec](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization)
 
 ## Troubleshooting
 
-### Authentication Issues
-- Verify `MCP_AUTH_TOKEN` is set in Vercel environment variables
-- Ensure your URL includes `?token=your_token_here`
-- Make sure the token in the URL matches your `MCP_AUTH_TOKEN` value
+### Connection Issues  
+- Verify the URL in Claude.ai is exactly `https://your-project.vercel.app/api/mcp`
+- Don't add `/health` or query parameters
+- Check that `API_KEY` environment variable is set in Vercel
 
 ### API Key Issues
 - Verify `CODA_API_TOKEN` is set in Vercel environment variables

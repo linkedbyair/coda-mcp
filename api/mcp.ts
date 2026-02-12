@@ -12,7 +12,7 @@ import { createPage, listDocs, listPages, resolveBrowserLink, updatePage } from 
 client.setConfig({
   baseURL: "https://coda.io/apis/v1",
   headers: {
-    Authorization: `Bearer ${config.apiKey}`,
+    Authorization: `Bearer ${config.codaApiToken}`,
   },
 });
 
@@ -202,26 +202,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  // Verify authentication token from query parameter
-  const expectedToken = process.env.MCP_AUTH_TOKEN;
-  
-  if (expectedToken) {
-    const providedToken = req.query.token;
-    
-    if (!providedToken) {
-      res.status(401).json({ error: "Unauthorized: Missing token query parameter" });
-      return;
-    }
-    
-    if (providedToken !== expectedToken) {
-      res.status(401).json({ error: "Unauthorized: Invalid token" });
-      return;
-    }
-  }
-
   if (req.method === "GET") {
     // Extract path without query string
     const urlPath = req.url?.split('?')[0] || '/';
+    
+    // OAuth discovery endpoints
+    if (urlPath === '/.well-known/oauth-authorization-server') {
+      res.status(200).json({
+        issuer: `https://${req.headers.host}`,
+        token_endpoint: `https://${req.headers.host}/api/mcp/token`,
+        registration_endpoint: `https://${req.headers.host}/api/mcp/register`,
+      });
+      return;
+    }
+
+    if (urlPath === '/.well-known/oauth-protected-resource' || urlPath === '/.well-known/oauth-protected-resource/api/mcp') {
+      res.status(200).json({
+        resource: `https://${req.headers.host}/api/mcp`,
+        authorization_servers: [`https://${req.headers.host}`],
+      });
+      return;
+    }
+
+    if (urlPath === '/register') {
+      // Accept any client registration for now (authless mode)
+      res.status(200).json({
+        client_id: "authless",
+        client_secret: "not_required",
+      });
+      return;
+    }
     
     // Health check
     if (urlPath === '/' || urlPath === '/health') {
@@ -245,6 +255,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.error("SSE connection closed");
     });
   } else if (req.method === "POST") {
+    const urlPath = req.url?.split('?')[0] || '/';
+    
+    // Token endpoint (for OAuth - but we're authless, so just return success)
+    if (urlPath === '/token') {
+      res.status(200).json({
+        access_token: "authless_mode",
+        token_type: "Bearer",
+        expires_in: 3600,
+      });
+      return;
+    }
+    
     // Message endpoint - SSE transport handles this
     res.status(200).send("OK");
   } else {
