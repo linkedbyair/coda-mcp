@@ -1,7 +1,7 @@
 type Config = {
-  apiKey: string;
+  codaApiToken: string;
 };
 
 export const config: Config = {
-  apiKey: process.env.API_KEY!,
+  codaApiToken: process.env.CODA_API_TOKEN!,
 };

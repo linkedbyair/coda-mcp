@@ -8,7 +8,7 @@ import { config } from "../src/config";
 client.setConfig({
   baseURL: "https://coda.io/apis/v1",
   headers: {
-    Authorization: `Bearer ${config.apiKey}`,
+    Authorization: `Bearer ${config.codaApiToken}`,
   },
 });
 

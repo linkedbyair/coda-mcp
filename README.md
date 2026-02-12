@@ -28,7 +28,7 @@ Add to your MCP configuration:
       "command": "npx",
       "args": ["-y", "coda-mcp@latest"],
       "env": {
-        "API_KEY": "your_coda_api_key"
+        "CODA_API_TOKEN": "your_coda_api_key"
       }
     }
   }
@@ -51,7 +51,7 @@ Deploy to Vercel to use with Claude.ai web application.
 
 In Vercel project settings, go to **Settings** → **Environment Variables** and add:
 
-1. **`API_KEY`**: Your Coda API key from https://coda.io/account
+1. **`CODA_API_TOKEN`**: Your Coda API key from https://coda.io/account
 2. **`MCP_AUTH_TOKEN`**: A secure random token (generate with: `openssl rand -hex 32`)
    - **Important**: This protects your server from unauthorized access
 3. Select **Production** environment for both
@@ -63,13 +63,16 @@ Vercel will automatically deploy. Your deployment will be at: `https://your-proj
 
 #### 4. Configure Claude.ai
 
-1. Go to [Claude.ai](https://claude.ai) Settings
-2. Navigate to **Capabilities** or **Extensions**
+1. Go to [Claude.ai](https://claude.ai)'s Organization Settings (you must be a team admin or owner)
+2. Navigate to **Capabilities**
 3. Add your MCP server URL with token:
    ```
    https://your-project.vercel.app/api/mcp?token=your_generated_token_here
    ```
    (Replace `your_generated_token_here` with your actual `MCP_AUTH_TOKEN` value)
+4. Go to your user setitngs
+5. Navigate to **Connections**
+6. Find the Coda connection and click "enable"
 
 #### Verify Deployment
 
@@ -161,7 +164,7 @@ https://your-project.vercel.app/api/mcp?token=your_token_here
 - Make sure the token in the URL matches your `MCP_AUTH_TOKEN` value
 
 ### API Key Issues
-- Verify `API_KEY` is set in Vercel environment variables
+- Verify `CODA_API_TOKEN` is set in Vercel environment variables
 - Test your key at https://coda.io/apis/v1/docs
 
 ### Connection Issues

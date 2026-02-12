@@ -43,7 +43,7 @@ app.get("/sse", async (req, res) => {
   client.setConfig({
     baseURL: "https://coda.io/apis/v1",
     headers: {
-      Authorization: `Bearer ${config.apiKey}`,
+      Authorization: `Bearer ${config.codaApiToken}`,
     },
   });
 
