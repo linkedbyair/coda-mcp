@@ -12,8 +12,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && chmod 755 dist/index.js",
-    "build:http": "tsc",
+    "build:http": "tsc && chmod 755 dist/index.js",
     "start:http": "node dist/http.js",
     "dev:http": "tsc && node dist/http.js",
     "lint": "eslint .",
