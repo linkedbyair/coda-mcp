@@ -68,13 +68,13 @@ Vercel will automatically deploy. Your deployment will be at: `https://your-proj
 3. Click **Add Connector**
 4. Enter your MCP server URL:
    ```
-   https://your-project.vercel.app/api/mcp
+   https://your-project.vercel.app
    ```
 5. Click **Connect**
 
 #### Verify Deployment
 
-Visit `https://your-project.vercel.app/api/mcp/health` - you should see:
+Visit `https://your-project.vercel.app/health` - you should see:
 
 ```json
 {
@@ -124,19 +124,20 @@ coda-mcp/
 └── dist/              # Compiled output (gitignored)
 ```
 
-### Why `api/` is Separate
-
-Vercel convention: files in `api/` automatically become serverless endpoints. `api/mcp.ts` is compiled by Vercel during deployment (not locally), creating the `/api/mcp` endpoint.
-
-### Three Entry Points
+### Two Entry Points
 
 | File | Transport | Use Case |
 |------|-----------|----------|
 | `src/index.ts` | stdio | Claude Desktop spawns as child process |
-| `src/http.ts` | HTTP/SSE | Standalone Node.js server |
-| `api/mcp.ts` | HTTP/SSE | Vercel serverless function |
+| `src/http.ts` | HTTP/SSE | Web server (deployed to Vercel/Railway/etc) |
 
-All three share the same core logic in `src/server.ts`.
+Both use the same core logic in `src/server.ts`.
+
+`src/http.ts` implements:
+- Full OAuth 2.1 discovery endpoints (`/.well-known/*`)
+- Dynamic Client Registration (`/register`)  
+- Authorization & token endpoints (`/authorize`, `/token`)
+- MCP SSE transport at root (`/`)
 
 ## Security
 
