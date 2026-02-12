@@ -17,8 +17,5 @@
       "src": "/api/mcp/(.*)",
       "dest": "/api/mcp.ts"
     }
-  ],
-  "env": {
-    "API_KEY": "@api_key"
-  }
+  ]
 }
