@@ -41,8 +41,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (req.method === "GET") {
+    // Extract path without query string
+    const urlPath = req.url?.split('?')[0] || '/';
+    
     // Health check
-    if (req.url === "/api/mcp" || req.url === "/api/mcp/health") {
+    if (urlPath === '/' || urlPath === '/health') {
       res.status(200).json({ 
         status: "ok", 
         server: "coda-mcp", 
@@ -51,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    // SSE endpoint
+    // SSE endpoint - main connection
     console.error("New SSE connection established");
 
     const transport = new SSEServerTransport("/api/mcp/messages", res);
