@@ -23,6 +23,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
+  // Verify authentication token from query parameter
+  const expectedToken = process.env.MCP_AUTH_TOKEN;
+  
+  if (expectedToken) {
+    const providedToken = req.query.token;
+    
+    if (!providedToken) {
+      res.status(401).json({ error: "Unauthorized: Missing token query parameter" });
+      return;
+    }
+    
+    if (providedToken !== expectedToken) {
+      res.status(401).json({ error: "Unauthorized: Invalid token" });
+      return;
+    }
+  }
+
   if (req.method === "GET") {
     // Health check
     if (req.url === "/api/mcp" || req.url === "/api/mcp/health") {

@@ -20,6 +20,23 @@ app.get("/health", (req, res) => {
 
 // SSE endpoint for MCP
 app.get("/sse", async (req, res) => {
+  // Verify authentication token from query parameter
+  const expectedToken = process.env.MCP_AUTH_TOKEN;
+  
+  if (expectedToken) {
+    const providedToken = req.query.token;
+    
+    if (!providedToken) {
+      res.status(401).json({ error: "Unauthorized: Missing token query parameter" });
+      return;
+    }
+    
+    if (providedToken !== expectedToken) {
+      res.status(401).json({ error: "Unauthorized: Invalid token" });
+      return;
+    }
+  }
+
   console.error("New SSE connection established");
 
   // Initialize Axios Client with API key
