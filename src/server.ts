@@ -8,10 +8,6 @@ import { createPage, listDocs, listPages, resolveBrowserLink, updatePage } from 
 export const server = new McpServer({
   name: "coda",
   version: packageJson.version,
-  capabilities: {
-    resources: {},
-    tools: {},
-  },
 });
 
 server.tool(

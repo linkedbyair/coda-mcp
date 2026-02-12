@@ -4,3 +4,8 @@ coverage/
 .DS_Store
 .env
 .claude/
+
+# Vercel build artifacts (api/ directory should only contain .ts source files)
+api/**/*.js
+api/**/*.js.map
+.vercel/
